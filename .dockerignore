@@ -1,0 +1,11 @@
+# Git
+.git
+.gitignore
+
+# Python
+.venv
+__pycache__/
+*.pyc
+
+# Local Env
+.env

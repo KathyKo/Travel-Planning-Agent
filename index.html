@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Agent (Demo)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chat-container {
+            width: 90%;
+            max-width: 600px;
+            height: 80vh;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        #chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 75%;
+            line-height: 1.5;
+        }
+        .user {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .agent {
+            background-color: #e9ecef;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .loading {
+            background-color: #e9ecef;
+            color: #888;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            font-style: italic;
+        }
+        #input-form {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 15px;
+        }
+        #message-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        #send-button {
+            border: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        #send-button:disabled {
+            background-color: #a0cfff;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">Travel Planning AI Agent</div>
+        <div id="chat-box" aria-live="polite">
+            <div class="message agent">Hi! I'm your AI Travel Assistent. How can I help you plan your trip?</div>
+        </div>
+        <form id="input-form">
+            <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
+            <button id="send-button" type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const inputForm = document.getElementById('input-form');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // --- 固定的 User ID (僅供 Demo) ---
+        // 為了保持記憶體，我們在這個 UI 中固定 user_id
+        const USER_ID = "web-ui-user-" + Math.random().toString(36).substr(2, 9);
+        console.log("Session User ID:", USER_ID);
+
+        inputForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // 阻止表單刷新頁面
+            
+            const messageText = messageInput.value.trim();
+            if (messageText === "") return;
+
+            // 1. 立刻顯示使用者的訊息
+            addMessageToBox(messageText, 'user');
+            messageInput.value = "";
+            sendButton.disabled = true;
+
+            // 2. 顯示「正在輸入...」
+            const loadingMessage = addMessageToBox("Agent is typing...", 'loading');
+
+            try {
+                // 3. 呼叫您的 FastAPI /chat API
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: USER_ID,
+                        message: messageText
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 4. 移除「正在輸入...」，換成 Agent 的真正回覆
+                chatBox.removeChild(loadingMessage);
+                addMessageToBox(data.response, 'agent');
+
+            } catch (error) {
+                // 5. 處理錯誤
+                chatBox.removeChild(loadingMessage);
+                addMessageToBox(`Sorry, I ran into an error: ${error.message}`, 'agent');
+                console.error("Fetch error:", error);
+            } finally {
+                sendButton.disabled = false;
+                messageInput.focus();
+            }
+        });
+
+        function addMessageToBox(text, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', type);
+            // 將 \n (換行符) 轉換為 <br>
+            messageElement.innerHTML = text.replace(/\n/g, '<br>');
+            chatBox.appendChild(messageElement);
+            // 自動滾動到底部
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return messageElement;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# --- Core Server ---
+fastapi
+uvicorn
+
+# --- Google AI (The Brain) ---
+google-generativeai
+python-dotenv
+
+# --- Tools ---
+requests
+tavily-python
+
+# --- RAG & Memory (Vector Database) ---
+faiss-cpu
+langchain
+langchain-community
+langchain-text-splitters
+langchain-google-genai
+sentence-transformers
+langchain-core           
+langchain-huggingface
