@@ -2,7 +2,7 @@
 
 [![Deployment](https://img.shields.io/badge/Deployed%20on-Google%20Cloud-blue?logo=googlecloud)](https://travel-agent-349302450067.asia-east1.run.app/)
 
-This project is an advanced AI agent built to fulfill the "Intelligent Travel Planning AI Agent" assessment. It provides a conversational interface for planning personalized 2-day trips to any city in the world, deployed as a robust API and web UI on Google Cloud Run.
+This project is an Intelligent Travel Planning AI Agent. It provides a conversational interface for planning personalized 2-day trips to any city in the world, deployed as a robust API and web UI on Google Cloud Run.
 
 ## 🚀 Demo & Testing
 
@@ -15,7 +15,7 @@ The agent is fully deployed and operational. You can interact with it in two way
 
 1.  **Open the [Chat UI](https://travel-agent-349302450067.asia-east1.run.app/)**.
 2.  **Test Long-Term Memory:**
-    * **Send:** `Hi, please remember I am vegetarian and I love museums.`
+    * **Send:** `Hi, please remember I am a vegetarian and I love museums.`
     * The agent will use the `save_preference` tool to store this.
 3.  **Test Planning & Tool Use:**
     * **Send:** `OK, now please plan a 3-day trip to Singapore for me.`
@@ -206,3 +206,11 @@ This project is a FastAPI server, where all logic is self-contained.
         ```
     * The server will start on `http://127.0.0.1:8080`.
     * You can test using the Chat UI (`http://127.0.0.1:8080/`) or the API docs (`http://127.0.0.1:8080/docs`).
+  
+
+##  🧩 Alternative ADK-Based Implementation
+
+There is also an alternative implementation of this travel planning agent built using the Google Agent Development Kit (ADK).  
+The ADK version uses LlmAgent, InMemoryRunner, and ADK-native tooling to manage sessions, tools, and orchestration in a more structured way.
+
+You can find the ADK-based version here: https://github.com/KathyKo/Travel-Planning-Agent-ADK
