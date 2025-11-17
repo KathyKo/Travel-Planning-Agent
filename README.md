@@ -26,8 +26,8 @@ The agent is fully deployed and operational. You can interact with it in two way
         * Synthesizes this information into a personalized plan.
 4.  **Test Proactive Suggestions & Multi-hop:**
     * The agent will proactively ask if you need help with flights or hotels.
-    * **Send:** `Yes, find me some good hotels.`
-    * The agent will call the `find_hotels` tool, which internally triggers another `web_search` for `best rated hotels in Paris`.
+    * **Send:** `Yes, find me some good hotels near Raffles Place.`
+    * The agent will call the `find_hotels` tool, which internally triggers another `web_search` for `best rated hotels near Raffles Place in Singapore`.
 
 ## ✅ System Structure
 
